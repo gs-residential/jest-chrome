@@ -27,13 +27,13 @@
   ],
   "scripts": {
     "build": "run-s build:clean build:pro build:types build:copy",
-    "build:clean": "rm -rf lib types",
+    "build:clean": "rimraf lib types",
     "build:copy": "copyfiles -f src/jest-chrome.d.ts types",
     "build:dev": "rollup -c --environment NODE_ENV:development",
     "build:pro": "rollup -c --environment NODE_ENV:production",
     "build:types": "tsc -p tsconfig.d.json",
     "build:watch": "npm run build:dev -- -w",
-    "postpublish": "rm -rf node_modules package-lock.json && pnpm i",
+    "postpublish": "rimraf node_modules package-lock.json && pnpm i",
     "start": "run-p build:watch",
     "pretest": "npm run build",
     "test": "jest"
@@ -66,9 +66,10 @@
     "lodash": "^4.17.15",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
+    "rimraf": "^5.0.5",
     "rollup": "^2.11.2",
     "ts-jest": "^26.0.0",
     "tslib": "^2.0.0",
-    "typescript": "^3.9.3"
+    "typescript": "^4.9.5"
   }
 }
