@@ -1,3 +1,3 @@
-import * as JestChrome from '../src/jest-chrome-jack'
+import * as JestChrome from '../src/jest-chrome'
 
 JestChrome.AccessibilityFeatures.animationPolicy

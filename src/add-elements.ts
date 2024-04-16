@@ -1,5 +1,7 @@
 import { createEvent } from './create-event'
-import { Storage } from './jest-chrome'
+import { Storage, Types } from './jest-chrome'
+import ChromeSetting = Types.ChromeSetting;
+import StorageArea = Storage.StorageArea;
 
 /**
  * Namespace member data format from jest-chrome-schema.json
@@ -80,6 +82,9 @@ export const addProperty = (
     case '%storage%':
       value = addStorageArea()
       break
+    case '%chromeSetting%':
+      value = addChromeSettings()
+      break
 
     default:
     // do nothing
@@ -91,12 +96,27 @@ export const addProperty = (
   return value
 }
 
-export function addStorageArea(): Storage.StorageArea {
+export function addStorageArea(): StorageArea {
   return {
     clear: jest.fn(),
     get: jest.fn(),
     getBytesInUse: jest.fn(),
+    setAccessLevel: jest.fn(),
     remove: jest.fn(),
+    set: jest.fn(),
+    onChanged: createEvent((...args: any[]) => {
+      return args
+    }),
+  }
+}
+
+export function addChromeSettings(): ChromeSetting {
+  return {
+    clear: jest.fn(),
+    get: jest.fn(),
+    onChange: createEvent((...args: any[]) => {
+      return args
+    }),
     set: jest.fn(),
   }
 }

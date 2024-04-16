@@ -21,8 +21,8 @@ mocked in imported modules. Add a setup file to `jest.config.js`:
 // jest.config.js
 
 module.exports = {
-  // Add this line to your Jest config
-  setupFilesAfterEnv: ['./jest.setup.js'],
+   // Add this line to your Jest config
+   setupFilesAfterEnv: ['./jest.setup.js'],
 }
 ```
 
@@ -62,26 +62,26 @@ those arguments.
 
 ```javascript
 test('chrome api events', () => {
-  const listenerSpy = jest.fn()
-  const sendResponseSpy = jest.fn()
+   const listenerSpy = jest.fn()
+   const sendResponseSpy = jest.fn()
 
-  chrome.runtime.onMessage.addListener(listenerSpy)
+   chrome.runtime.onMessage.addListener(listenerSpy)
 
-  expect(listenerSpy).not.toBeCalled()
-  expect(chrome.runtime.onMessage.hasListeners()).toBe(true)
+   expect(listenerSpy).not.toBeCalled()
+   expect(chrome.runtime.onMessage.hasListeners()).toBe(true)
 
-  chrome.runtime.onMessage.callListeners(
-    { greeting: 'hello' }, // message
-    {}, // MessageSender object
-    sendResponseSpy, // SendResponse function
-  )
+   chrome.runtime.onMessage.callListeners(
+           { greeting: 'hello' }, // message
+           {}, // MessageSender object
+           sendResponseSpy, // SendResponse function
+   )
 
-  expect(listenerSpy).toBeCalledWith(
-    { greeting: 'hello' },
-    {},
-    sendResponseSpy,
-  )
-  expect(sendResponseSpy).not.toBeCalled()
+   expect(listenerSpy).toBeCalledWith(
+           { greeting: 'hello' },
+           {},
+           sendResponseSpy,
+   )
+   expect(sendResponseSpy).not.toBeCalled()
 })
 ```
 
@@ -92,16 +92,16 @@ mocked function:
 
 ```javascript
 test('chrome api functions', () => {
-  const manifest = {
-    name: 'my chrome extension',
-    manifest_version: 2,
-    version: '1.0.0',
-  }
+   const manifest = {
+      name: 'my chrome extension',
+      manifest_version: 2,
+      version: '1.0.0',
+   }
 
-  chrome.runtime.getManifest.mockImplementation(() => manifest)
+   chrome.runtime.getManifest.mockImplementation(() => manifest)
 
-  expect(chrome.runtime.getManifest()).toEqual(manifest)
-  expect(chrome.runtime.getManifest).toBeCalled()
+   expect(chrome.runtime.getManifest()).toEqual(manifest)
+   expect(chrome.runtime.getManifest).toBeCalled()
 })
 ```
 
@@ -115,23 +115,23 @@ set to handle the callback.
 
 ```javascript
 test('chrome api functions with callback', () => {
-  const message = { greeting: 'hello?' }
-  const response = { greeting: 'here I am' }
-  const callbackSpy = jest.fn()
+   const message = { greeting: 'hello?' }
+   const response = { greeting: 'here I am' }
+   const callbackSpy = jest.fn()
 
-  chrome.runtime.sendMessage.mockImplementation(
-    (message, callback) => {
-      callback(response)
-    },
-  )
+   chrome.runtime.sendMessage.mockImplementation(
+           (message, callback) => {
+              callback(response)
+           },
+   )
 
-  chrome.runtime.sendMessage(message, callbackSpy)
+   chrome.runtime.sendMessage(message, callbackSpy)
 
-  expect(chrome.runtime.sendMessage).toBeCalledWith(
-    message,
-    callbackSpy,
-  )
-  expect(callbackSpy).toBeCalledWith(response)
+   expect(chrome.runtime.sendMessage).toBeCalledWith(
+           message,
+           callbackSpy,
+   )
+   expect(callbackSpy).toBeCalledWith(response)
 })
 ```
 
@@ -154,56 +154,162 @@ below:
 
 ```javascript
 test('chrome api functions with lastError', () => {
-  const message = { greeting: 'hello?' }
-  const response = { greeting: 'here I am' }
+   const message = { greeting: 'hello?' }
+   const response = { greeting: 'here I am' }
 
-  // lastError setup
-  const lastErrorMessage = 'this is an error'
-  const lastErrorGetter = jest.fn(() => lastErrorMessage)
-  const lastError = {
-    get message() {
-      return lastErrorGetter()
-    },
-  }
+   // lastError setup
+   const lastErrorMessage = 'this is an error'
+   const lastErrorGetter = jest.fn(() => lastErrorMessage)
+   const lastError = {
+      get message() {
+         return lastErrorGetter()
+      },
+   }
 
-  // mock implementation
-  chrome.runtime.sendMessage.mockImplementation(
-    (message, callback) => {
-      chrome.runtime.lastError = lastError
+   // mock implementation
+   chrome.runtime.sendMessage.mockImplementation(
+           (message, callback) => {
+              chrome.runtime.lastError = lastError
 
-      callback(response)
+              callback(response)
 
-      // lastError is undefined outside of a callback
-      delete chrome.runtime.lastError
-    },
-  )
+              // lastError is undefined outside of a callback
+              delete chrome.runtime.lastError
+           },
+   )
 
-  // callback implementation
-  const lastErrorSpy = jest.fn()
-  const callbackSpy = jest.fn(() => {
-    if (chrome.runtime.lastError) {
-      lastErrorSpy(chrome.runtime.lastError.message)
-    }
-  })
+   // callback implementation
+   const lastErrorSpy = jest.fn()
+   const callbackSpy = jest.fn(() => {
+      if (chrome.runtime.lastError) {
+         lastErrorSpy(chrome.runtime.lastError.message)
+      }
+   })
 
-  // send a message
-  chrome.runtime.sendMessage(message, callbackSpy)
+   // send a message
+   chrome.runtime.sendMessage(message, callbackSpy)
 
-  expect(callbackSpy).toBeCalledWith(response)
-  expect(lastErrorGetter).toBeCalled()
-  expect(lastErrorSpy).toBeCalledWith(lastErrorMessage)
+   expect(callbackSpy).toBeCalledWith(response)
+   expect(lastErrorGetter).toBeCalled()
+   expect(lastErrorSpy).toBeCalledWith(lastErrorMessage)
 
-  // lastError has been cleared
-  expect(chrome.runtime.lastError).toBeUndefined()
+   // lastError has been cleared
+   expect(chrome.runtime.lastError).toBeUndefined()
 })
 ```
 
 ### Contributions
 
 The `chrome` object is based on schemas from the Chromium
-project, with thanks to
-[`sinon-chrome`](https://github.com/acvetkov/sinon-chrome) for
-compiling the schemas.
+project
 
-Special thanks to [@shellscape](https://github.com/shellscape)
-for transferring the NPM package name `jest-chrome` to us!
+#### How to extend the schema
+
+1. #### Top-Middle level objects (E.g. add `local` to `chrome.storage`).
+   Let's add `local` schema to `chrome.storage`. If you want to add some non-end property then you should add it as an object key
+    ```json
+     {
+         "storage": {
+            // ... 
+            "local": {
+               "type": "property",
+               "name": "local",
+               "value": "%storage%"
+            }    
+         }
+      }
+    ```
+2. #### End level objects
+   There are 3 types of end level entities: property, function and event. All of them has 2 same properties
+   `type: 'function' | 'event' | 'property'` and `name: string`.
+   Property has one additional field called value (`value: any`). Value represents the actual value of the property
+   except 2 cases. When value equals `%storage%` or `%chromeSetting%` it will be replaced with the:
+```typescript
+// %storage%
+{
+   clear: jest.fn(),
+   get: jest.fn(),
+   getBytesInUse: jest.fn(),
+   setAccessLevel: jest.fn(),
+   remove: jest.fn(),
+   set: jest.fn(),
+   onChanged: createEvent((...args: any[]) => args)
+}
+// %chromeSetting%
+{
+   clear: jest.fn(),
+   get: jest.fn(),
+   onChange: createEvent((...args: any[]) => args),
+   set: jest.fn()
+}
+```
+Functions and events has their own property called parameters, which is representing the parameters of each:
+```typescript
+export interface Parameter {
+   /**
+    * Represents the name of the parameter
+    */
+   name: string
+   /**
+    * Represents if parameter optional or not
+    */
+   optional: boolean
+   /**
+    * Don't have a clue what it does =)
+    */
+   parameters: number
+   /**
+    * Type of the parameter
+    */
+   type: string
+}
+```
+Example of adding end level properties
+```json
+{
+   "storage": {
+      // ... 
+      "local": {
+         "type": "property",
+         "name": "local",
+         "value": "%storage%"
+      }
+   },
+   "tabs": {
+      // ... 
+      "connect": {
+         "type": "function",
+         "name": "connect",
+         "parameters": [
+            {
+               "name": "tabId",
+               "optional": false,
+               "length": 0,
+               "type": "integer"
+            },
+            {
+               "name": "connectInfo",
+               "optional": true,
+               "length": 0,
+               "type": "object"
+            }
+         ]
+      }
+   },
+   "webNavigation": {
+      "onBeforeNavigate": {
+         "type": "event",
+         "name": "onBeforeNavigate",
+         "parameters": [
+            {
+               "name": "details",
+               "optional": false,
+               "parameters": 0,
+               "type": "object"
+            }
+         ],
+         "rules": false
+      }
+   }
+}
+```
