@@ -27,7 +27,7 @@ test('chrome api events', () => {
 test('chrome api functions', () => {
   const manifest = {
     name: 'my chrome extension',
-    manifest_version: 2,
+    manifest_version: 3,
     version: '1.0.0',
   } as unknown as Manifest
 
