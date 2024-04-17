@@ -74,6 +74,17 @@ test('ownKeys: storage', () => {
     getBytesInUse: expect.any(Function),
     remove: expect.any(Function),
     set: expect.any(Function),
+    setAccessLevel: expect.any(Function),
+    onChanged: {
+      addListener: expect.any(Function),
+      callListeners: expect.any(Function),
+      clearListeners: expect.any(Function),
+      getListeners: expect.any(Function),
+      hasListeners: expect.any(Function),
+      hasListener: expect.any(Function),
+      removeListener: expect.any(Function),
+      toEvent: expect.any(Function),
+    },
   })
 })
 

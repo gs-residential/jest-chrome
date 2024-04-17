@@ -3131,6 +3131,18 @@
           "type": "function"
         }
       ]
+    },
+    "installReplacementWebApp": {
+      "type": "function",
+      "name": "installReplacementWebApp",
+      "parameters": [
+        {
+          "name": "callback",
+          "optional": true,
+          "length": 1,
+          "type": "function"
+        }
+      ]
     }
   },
   "notifications": {
@@ -3687,9 +3699,11 @@
   },
   "privacy": {
     "network": {
-      "type": "property",
-      "name": "network",
-      "value": {}
+      "webRTCIPHandlingPolicy": {
+        "type": "property",
+        "name": "webRTCIPHandlingPolicy",
+        "value": "%chromeSetting%"
+      }
     },
     "services": {
       "type": "property",
@@ -3719,12 +3733,7 @@
     "settings": {
       "type": "property",
       "name": "settings",
-      "value": [
-        "proxy",
-        {
-          "$ref": "ProxyConfig"
-        }
-      ]
+      "value": "%chromeSetting%"
     }
   },
   "runtime": {
@@ -4177,6 +4186,11 @@
     "sync": {
       "type": "property",
       "name": "sync",
+      "value": "%storage%"
+    },
+    "session":  {
+      "type": "property",
+      "name": "session",
       "value": "%storage%"
     }
   },

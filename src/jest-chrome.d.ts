@@ -246,55 +246,102 @@ export namespace Alarms {
   export interface AlarmEvent
     extends JestChromeNamespace.events.Event<(alarm: Alarm) => void> {}
 
+
   /**
    * Creates an alarm. Near the time(s) specified by alarmInfo, the onAlarm event is fired. If there is another alarm with the same name (or no name if none is specified), it will be cancelled and replaced by this alarm.
-   *
    * In order to reduce the load on the user's machine, Chrome limits alarms to at most once every 1 minute but may delay them an arbitrary amount more. That is, setting delayInMinutes or periodInMinutes to less than 1 will not be honored and will cause a warning. when can be set to less than 1 minute after "now" without warning but won't actually cause the alarm to fire for at least 1 minute.
-   *
    * To help you debug your app or extension, when you've loaded it unpacked, there's no limit to how often the alarm can fire.
-   *
+   * @param alarmInfo Describes when the alarm should fire. The initial time must be specified by either when or delayInMinutes (but not both). If periodInMinutes is set, the alarm will repeat every periodInMinutes minutes after the initial event. If neither when or delayInMinutes is set for a repeating alarm, periodInMinutes is used as the default for delayInMinutes.
+   * @return The `create` method provides its result via callback or returned as a `Promise` (MV3 only).
+   */
+  export function create(alarmInfo: AlarmCreateInfo): Promise<void>;
+  /**
+   * Creates an alarm. Near the time(s) specified by alarmInfo, the onAlarm event is fired. If there is another alarm with the same name (or no name if none is specified), it will be cancelled and replaced by this alarm.
+   * In order to reduce the load on the user's machine, Chrome limits alarms to at most once every 1 minute but may delay them an arbitrary amount more. That is, setting delayInMinutes or periodInMinutes to less than 1 will not be honored and will cause a warning. when can be set to less than 1 minute after "now" without warning but won't actually cause the alarm to fire for at least 1 minute.
+   * To help you debug your app or extension, when you've loaded it unpacked, there's no limit to how often the alarm can fire.
+   * @param name Optional name to identify this alarm. Defaults to the empty string.
+   * @param alarmInfo Describes when the alarm should fire. The initial time must be specified by either when or delayInMinutes (but not both). If periodInMinutes is set, the alarm will repeat every periodInMinutes minutes after the initial event. If neither when or delayInMinutes is set for a repeating alarm, periodInMinutes is used as the default for delayInMinutes.
+   * @return The `create` method provides its result via callback or returned as a `Promise` (MV3 only).
+   */
+  export function create(name: string, alarmInfo: AlarmCreateInfo): Promise<void>;
+  /**
+   * Creates an alarm. Near the time(s) specified by alarmInfo, the onAlarm event is fired. If there is another alarm with the same name (or no name if none is specified), it will be cancelled and replaced by this alarm.
+   * In order to reduce the load on the user's machine, Chrome limits alarms to at most once every 1 minute but may delay them an arbitrary amount more. That is, setting delayInMinutes or periodInMinutes to less than 1 will not be honored and will cause a warning. when can be set to less than 1 minute after "now" without warning but won't actually cause the alarm to fire for at least 1 minute.
+   * To help you debug your app or extension, when you've loaded it unpacked, there's no limit to how often the alarm can fire.
    * @param alarmInfo Describes when the alarm should fire. The initial time must be specified by either when or delayInMinutes (but not both). If periodInMinutes is set, the alarm will repeat every periodInMinutes minutes after the initial event. If neither when or delayInMinutes is set for a repeating alarm, periodInMinutes is used as the default for delayInMinutes.
    */
-  export const create: jest.MockedFunction<typeof chrome.alarms.create>
-
+  export function create(alarmInfo: AlarmCreateInfo, callback: () => void): void;
+  /**
+   * Creates an alarm. Near the time(s) specified by alarmInfo, the onAlarm event is fired. If there is another alarm with the same name (or no name if none is specified), it will be cancelled and replaced by this alarm.
+   * In order to reduce the load on the user's machine, Chrome limits alarms to at most once every 1 minute but may delay them an arbitrary amount more. That is, setting delayInMinutes or periodInMinutes to less than 1 will not be honored and will cause a warning. when can be set to less than 1 minute after "now" without warning but won't actually cause the alarm to fire for at least 1 minute.
+   * To help you debug your app or extension, when you've loaded it unpacked, there's no limit to how often the alarm can fire.
+   * @param name Optional name to identify this alarm. Defaults to the empty string.
+   * @param alarmInfo Describes when the alarm should fire. The initial time must be specified by either when or delayInMinutes (but not both). If periodInMinutes is set, the alarm will repeat every periodInMinutes minutes after the initial event. If neither when or delayInMinutes is set for a repeating alarm, periodInMinutes is used as the default for delayInMinutes.
+   */
+  export function create(name: string, alarmInfo: AlarmCreateInfo, callback: () => void): void;
   /**
    * Gets an array of all the alarms.
-   *
-   * @param callback The callback parameter should be a function that looks like this:
-   *
-   * function(array of Alarm alarms) {...};
    */
-  export const getAll: jest.MockedFunction<typeof chrome.alarms.getAll>
+  export function getAll(callback: (alarms: Alarm[]) => void): void;
+  /**
+   * Gets an array of all the alarms.
+   * @return The `getAll` method provides its result via callback or returned as a `Promise` (MV3 only).
+   */
+  export function getAll(): Promise<Alarm[]>;
   /**
    * Clears all alarms.
-   *
-   * @param callback If you specify the callback parameter, it should be a function that looks like this:
-   *
    * function(boolean wasCleared) {...};
+   * @return The `clearAll` method provides its result via callback or returned as a `Promise` (MV3 only).
    */
-  export const clearAll: jest.MockedFunction<typeof chrome.alarms.clearAll>
+  export function clearAll(): Promise<boolean>;
+  /**
+   * Clears all alarms.
+   */
+  export function clearAll(callback: (wasCleared: boolean) => void): void;
   /**
    * Clears the alarm with the given name.
-   *
    * @param name The name of the alarm to clear. Defaults to the empty string.
-   *
-   * @param callback If you specify the callback parameter, it should be a function that looks like this:
-   *
-   * function(boolean wasCleared) {...};
+   * @return The `clear` method provides its result via callback or returned as a `Promise` (MV3 only).
    */
-  export const clear: jest.MockedFunction<typeof chrome.alarms.clear>
-
+  export function clear(name?: string): Promise<boolean>;
+  /**
+   * Clears the alarm with the given name.
+   * @param name The name of the alarm to clear. Defaults to the empty string.
+   */
+  export function clear(callback: (wasCleared: boolean) => void): void;
+  export function clear(name: string, callback: (wasCleared: boolean) => void): void;
+  /**
+   * Clears the alarm without a name.
+   */
+  export function clear(callback: (wasCleared: boolean) => void): void;
+  /**
+   * Clears the alarm without a name.
+   * @return The `clear` method provides its result via callback or returned as a `Promise` (MV3 only).
+   */
+  export function clear(): Promise<void>;
   /**
    * Retrieves details about the specified alarm.
-   *
-   * @param callback The callback parameter should be a function that looks like this:
-   *
-   * function( Alarm alarm) {...};
    */
-  export const get: jest.MockedFunction<typeof chrome.alarms.get>
+  export function get(callback: (alarm: Alarm) => void): void;
+  /**
+   * Retrieves details about the specified alarm.
+   * @return The `get` method provides its result via callback or returned as a `Promise` (MV3 only).
+   */
+  export function get(): Promise<Alarm>;
+  /**
+   * Retrieves details about the specified alarm.
+   * @param name The name of the alarm to get. Defaults to the empty string.
+   */
+  export function get(name: string, callback: (alarm: Alarm) => void): void;
+  /**
+   * Retrieves details about the specified alarm.
+   * @param name The name of the alarm to get. Defaults to the empty string.
+   * @return The `get` method provides its result via callback or returned as a `Promise` (MV3 only).
+   */
+  export function get(name: string): Promise<Alarm>;
 
-  /**  Fired when an alarm has elapsed. Useful for event pages. */
-  export const onAlarm: AlarmEvent
+  /** Fired when an alarm has elapsed. Useful for event pages. */
+  export const onAlarm: AlarmEvent;
 }
 
 ////////////////////
@@ -7090,7 +7137,7 @@ export namespace Runtime {
      *    
      * @since Chrome 80.
     */
-    origin?: string;
+    origin?: string
   }
 
   /**
@@ -7486,6 +7533,69 @@ export namespace Runtime {
    * Parameter response: The JSON response object sent by the handler of the message. If an error occurs while connecting to the extension, the callback will be called with no arguments and runtime.lastError will be set to the error message.
    */
   export const sendMessage: jest.MockedFunction<typeof chrome.runtime.sendMessage>
+  export function sendMessage<M = any, R = any>(message: M, responseCallback: (response: R) => void): jest.MockedFunction<void>
+  /**
+   * Sends a single message to event listeners within your extension/app or a different extension/app. Similar to runtime.connect but only sends a single message, with an optional response. If sending to your extension, the runtime.onMessage event will be fired in each page, or runtime.onMessageExternal, if a different extension. Note that extensions cannot send messages to content scripts using this method. To send messages to content scripts, use tabs.sendMessage.
+   * @since Chrome 32
+   * Parameter response: The JSON response object sent by the handler of the message. If an error occurs while connecting to the extension, the callback will be called with no arguments and runtime.lastError will be set to the error message.
+   */
+  export function sendMessage<M = any, R = any>(
+      message: M,
+      options: MessageOptions,
+      responseCallback: (response: R) => void,
+  ): jest.MockedFunction<void>
+  /**
+   * Sends a single message to event listeners within your extension/app or a different extension/app. Similar to runtime.connect but only sends a single message, with an optional response. If sending to your extension, the runtime.onMessage event will be fired in each page, or runtime.onMessageExternal, if a different extension. Note that extensions cannot send messages to content scripts using this method. To send messages to content scripts, use tabs.sendMessage.
+   * @since Chrome 26
+   * @param extensionId The ID of the extension/app to send the message to. If omitted, the message will be sent to your own extension/app. Required if sending messages from a web page for web messaging.
+   * Parameter response: The JSON response object sent by the handler of the message. If an error occurs while connecting to the extension, the callback will be called with no arguments and runtime.lastError will be set to the error message.
+   */
+  export function sendMessage<M = any, R = any>(
+      extensionId: string | undefined | null,
+      message: M,
+      responseCallback: (response: R) => void,
+  ): jest.MockedFunction<void>
+  /**
+   * Sends a single message to event listeners within your extension/app or a different extension/app. Similar to runtime.connect but only sends a single message, with an optional response. If sending to your extension, the runtime.onMessage event will be fired in each page, or runtime.onMessageExternal, if a different extension. Note that extensions cannot send messages to content scripts using this method. To send messages to content scripts, use tabs.sendMessage.
+   * @since Chrome 32
+   * @param extensionId The ID of the extension/app to send the message to. If omitted, the message will be sent to your own extension/app. Required if sending messages from a web page for web messaging.
+   * Parameter response: The JSON response object sent by the handler of the message. If an error occurs while connecting to the extension, the callback will be called with no arguments and runtime.lastError will be set to the error message.
+   */
+  export function sendMessage<Message = any, Response = any>(
+      extensionId: string | undefined | null,
+      message: Message,
+      options: MessageOptions,
+      responseCallback: (response: Response) => void,
+  ): jest.MockedFunction<void>
+  /**
+   * Sends a single message to event listeners within your extension/app or a different extension/app. Similar to runtime.connect but only sends a single message, with an optional response. If sending to your extension, the runtime.onMessage event will be fired in each page, or runtime.onMessageExternal, if a different extension. Note that extensions cannot send messages to content scripts using this method. To send messages to content scripts, use tabs.sendMessage.
+   * @since Chrome 26
+   */
+  export function sendMessage<M = any, R = any>(message: M): jest.MockedFunction<Promise<R>>
+  /**
+   * Sends a single message to event listeners within your extension/app or a different extension/app. Similar to runtime.connect but only sends a single message, with an optional response. If sending to your extension, the runtime.onMessage event will be fired in each page, or runtime.onMessageExternal, if a different extension. Note that extensions cannot send messages to content scripts using this method. To send messages to content scripts, use tabs.sendMessage.
+   * @since Chrome 32
+   */
+  export function sendMessage<M = any, R = any>(
+      message: M,
+      options: MessageOptions,
+  ): jest.MockedFunction<Promise<R>>
+  /**
+   * Sends a single message to event listeners within your extension/app or a different extension/app. Similar to runtime.connect but only sends a single message, with an optional response. If sending to your extension, the runtime.onMessage event will be fired in each page, or runtime.onMessageExternal, if a different extension. Note that extensions cannot send messages to content scripts using this method. To send messages to content scripts, use tabs.sendMessage.
+   * @since Chrome 26
+   * @param extensionId The ID of the extension/app to send the message to. If omitted, the message will be sent to your own extension/app. Required if sending messages from a web page for web messaging.
+   */
+  export function sendMessage<M = any, R = any>(extensionId: string | undefined | null, message: M): jest.MockedFunction<Promise<R>>
+  /**
+   * Sends a single message to event listeners within your extension/app or a different extension/app. Similar to runtime.connect but only sends a single message, with an optional response. If sending to your extension, the runtime.onMessage event will be fired in each page, or runtime.onMessageExternal, if a different extension. Note that extensions cannot send messages to content scripts using this method. To send messages to content scripts, use tabs.sendMessage.
+   * @since Chrome 32
+   * @param extensionId The ID of the extension/app to send the message to. If omitted, the message will be sent to your own extension/app. Required if sending messages from a web page for web messaging.
+   */
+  export function sendMessage<Message = any, Response = any>(
+      extensionId: string | undefined | null,
+      message: Message,
+      options: MessageOptions,
+  ): jest.MockedFunction<Promise<Response>>
 
   /**
    * Send a single message to a native application.
@@ -7705,64 +7815,122 @@ export namespace Sessions {
  * @since Chrome 20.
  */
 export namespace Storage {
+  import AccessLevel = chrome.storage.AccessLevel;
   type GetBytesInUseCallback = (bytesInUse: number) => void
   type GetCallback = (items: { [key: string]: any }) => void
+  export interface StorageAreaChangedEvent
+      extends JestChromeNamespace.events.Event<(changes: { [key: string]: StorageChange }) => void> {}
 
   export interface StorageArea {
     /**
      * Gets the amount of space (in bytes) being used by one or more items.
-     *
-     * @param keys A single key or list of keys to get the total usage for. An empty list will return 0. Pass in null to get the total usage of all of storage.
-     *
      * @param callback Callback with the amount of space being used by storage, or on failure (in which case runtime.lastError will be set).
-     *
      * Parameter bytesInUse: Amount of space being used in storage, in bytes.
      */
-    getBytesInUse: jest.MockedFunction<
-      chrome.storage.StorageArea["getBytesInUse"]
-    >
+    getBytesInUse(callback: (bytesInUse: number) => void): jest.MockedFunction<void>
+    /**
+     * Gets the amount of space (in bytes) being used by one or more items.
+     * @param keys Optional. A single key or list of keys to get the total usage for. An empty list will return 0. Pass in null to get the total usage of all storage.
+     * @return A Promise that resolves with a number
+     * @since MV3
+     */
+    getBytesInUse(keys?: string | string[] | null):  jest.MockedFunction<Promise<number>>
+    /**
+     * Gets the amount of space (in bytes) being used by one or more items.
+     * @param keys Optional. A single key or list of keys to get the total usage for. An empty list will return 0. Pass in null to get the total usage of all storage.
+     * @param callback Callback with the amount of space being used by storage, or on failure (in which case runtime.lastError will be set).
+     * Parameter bytesInUse: Amount of space being used in storage, in bytes.
+     */
+    getBytesInUse(keys: string | string[] | null, callback: (bytesInUse: number) => void): jest.MockedFunction<void>
     /**
      * Removes all items from storage.
-     *
+     * @return A void Promise
+     * @since MV3
+     */
+    clear():  jest.MockedFunction<Promise<void>>
+    /**
+     * Removes all items from storage.
      * @param callback Optional.
-     *
      * Callback on success, or on failure (in which case runtime.lastError will be set).
      */
-    clear: jest.MockedFunction<chrome.storage.StorageArea["clear"]>
+    clear(callback: () => void): jest.MockedFunction<void>
     /**
      * Sets multiple items.
-     *
      * @param items An object which gives each key/value pair to update storage with. Any other key/value pairs in storage will not be affected.
-     *
-     * Primitive values such as numbers will serialize as expected. Values with a typeof "object" and "function" will typically serialize to {}, with the exception of Array (serializes as expected), Date, and Regex (serialize using their String representation).
-     *
+     * Primitive values such as numbers will serialize as expected. Values with a typeof "object" and "function" will typically serialize to {}, except Array (serializes as expected), Date, and Regex (serialize using their String representation).
+     * @return A void Promise
+     * @since MV3
+     */
+    set(items: { [key: string]: any }): Promise<void>
+    /**
+     * Sets multiple items.
+     * @param items An object which gives each key/value pair to update storage with. Any other key/value pairs in storage will not be affected.
+     * Primitive values such as numbers will serialize as expected. Values with a typeof "object" and "function" will typically serialize to {}, except Array (serializes as expected), Date, and Regex (serialize using their String representation).
      * @param callback Optional.
-     *
      * Callback on success, or on failure (in which case runtime.lastError will be set).
      */
-    set: jest.MockedFunction<chrome.storage.StorageArea["set"]>
+    set(items: { [key: string]: any }, callback: () => void): void
     /**
      * Removes one or more items from storage.
-     *
-     * @param A single key or a list of keys for items to remove.
-     *
+     * @param keys A single key or a list of keys for items to remove.
+     * @return A void Promise
+     * @since MV3
+     */
+    remove(keys: string | string[]): Promise<void>
+    /**
+     * Removes one or more items from storage.
+     * @param keys A single key or a list of keys for items to remove.
      * @param callback Optional.
-     *
      * Callback on success, or on failure (in which case runtime.lastError will be set).
      */
-    remove: jest.MockedFunction<chrome.storage.StorageArea["remove"]>
+    remove(keys: string | string[], callback: () => void): void
+    /**
+     * Gets the entire contents of storage.
+     * @param callback Callback with storage items, or on failure (in which case runtime.lastError will be set).
+     * Parameter items: Object with items in their key-value mappings.
+     */
+    get(callback: (items: { [key: string]: any }) => void): void
     /**
      * Gets one or more items from storage.
-     *
      * @param keys A single key to get, list of keys to get, or a dictionary specifying default values.
-     *
      * An empty list or object will return an empty result object. Pass in null to get the entire contents of storage.
-     *
-     * @param callback Callback with storage items, or on failure (in which case runtime.lastError will be set).
-     *
-     * Parameter items: Record<string, any> with items in their key-value mappings.
+     * @return A Promise that resolves with an object containing items
+     * @since MV3
      */
-    get: jest.MockedFunction<chrome.storage.StorageArea["get"]>
+    get(keys?: string | string[] | { [key: string]: any } | null): Promise<{ [key: string]: any }>
+    /**
+     * Gets one or more items from storage.
+     * @param keys A single key to get, list of keys to get, or a dictionary specifying default values.
+     * An empty list or object will return an empty result object. Pass in null to get the entire contents of storage.
+     * @param callback Callback with storage items, or on failure (in which case runtime.lastError will be set).
+     * Parameter items: Object with items in their key-value mappings.
+     */
+    get(
+        keys: string | string[] | { [key: string]: any } | null,
+        callback: (items: { [key: string]: any }) => void,
+    ): void
+    /**
+     * Sets the desired access level for the storage area. The default will be only trusted contexts.
+     * @param accessOptions An object containing an accessLevel key which contains the access level of the storage area.
+     * @return A void Promise.
+     * @since Chrome 102
+     */
+    setAccessLevel(accessOptions: { accessLevel: AccessLevel }): Promise<void>
+    /**
+     * Sets the desired access level for the storage area. The default will be only trusted contexts.
+     * @param accessOptions An object containing an accessLevel key which contains the access level of the storage area.
+     * @param callback Optional.
+     * @since Chrome 102
+     */
+    setAccessLevel(accessOptions: { accessLevel: AccessLevel }, callback: () => void): void
+    /**
+     * Fired when one or more items change within this storage area.
+     * @param keys A single key to get, list of keys to get, or a dictionary specifying default values.
+     * An empty list or object will return an empty result object. Pass in null to get the entire contents of storage.
+     * @param callback Callback with storage items, or on failure (in which case runtime.lastError will be set).
+     * Parameter items: Object with items in their key-value mappings.
+     */
+    onChanged: StorageAreaChangedEvent
   }
 
   export interface StorageChange {
@@ -9346,6 +9514,7 @@ export namespace Tabs {
    *
    * @param tabId The tab to close.
    */
+  export const remove: jest.MockedFunction<typeof chrome.tabs.remove>
 
   /**
    * Captures the visible area of the currently active tab in the specified window. You must have <all_urls> permission to use this method.
@@ -9857,11 +10026,21 @@ export namespace Types {
      *
      * @param details Which setting to change.
      *
-     * @param callback Optional. Called at the completion of the set operation.
+     * @param callback Called at the completion of the set operation.
      */
     set(
       details: ChromeSettingSetDetails,
-      callback?: Function,
+    ): Promise<void>
+    /**
+     * Sets the value of a setting.
+     *
+     * @param details Which setting to change.
+     *
+     * @param callback Called at the completion of the set operation.
+     */
+    set(
+      details: ChromeSettingSetDetails,
+      callback: Function,
     ): void
     /**
      * Gets the value of a setting.
@@ -9870,18 +10049,35 @@ export namespace Types {
      */
     get(
       details: ChromeSettingGetDetails,
-      callback?: DetailsCallback,
+    ): Promise<ChromeSettingGetResultDetails>
+    /**
+     * Gets the value of a setting.
+     *
+     * @param details Which setting to consider.
+     * @param callback Callback function
+     */
+    get(
+      details: ChromeSettingGetDetails,
+      callback: DetailsCallback,
     ): void
     /**
      * Clears the setting, restoring any default value.
      *
      * @param details Which setting to clear.
-     *
-     * @param callback Optional. Called at the completion of the clear operation.
      */
     clear(
       details: ChromeSettingClearDetails,
-      callback?: Function,
+    ): Promise<void>
+    /**
+     * Clears the setting, restoring any default value.
+     *
+     * @param details Which setting to clear.
+     *
+     * @param callback Called at the completion of the clear operation.
+     */
+    clear(
+      details: ChromeSettingClearDetails,
+      callback: Function,
     ): void
     /** Fired after the setting changes. */
     onChange: ChromeSettingChangedEvent

@@ -1,4 +1,5 @@
 import { chrome } from '../src'
+import Manifest = chrome.runtime.Manifest
 
 test('chrome api events', () => {
   const listenerSpy = jest.fn()
@@ -26,9 +27,9 @@ test('chrome api events', () => {
 test('chrome api functions', () => {
   const manifest = {
     name: 'my chrome extension',
-    manifest_version: 2,
+    manifest_version: 3,
     version: '1.0.0',
-  }
+  } as unknown as Manifest
 
   chrome.runtime.getManifest.mockImplementation(() => manifest)
 
@@ -40,13 +41,9 @@ test('chrome api functions with callback', () => {
   const message = { greeting: 'hello?' }
   const response = { greeting: 'here I am' }
   const callbackSpy = jest.fn()
-
-  chrome.runtime.sendMessage.mockImplementation(
-    (message, callback) => {
-      callback(response)
-    },
-  )
-
+  void (chrome.runtime.sendMessage as jest.Mock).mockImplementation((message: any, callback: (response: any) => void) => {
+    callback(response)
+  })
   chrome.runtime.sendMessage(message, callbackSpy)
 
   expect(chrome.runtime.sendMessage).toBeCalledWith(
@@ -69,17 +66,14 @@ test('chrome api functions with lastError', () => {
     },
   }
 
-  // mock implementation
-  chrome.runtime.sendMessage.mockImplementation(
-    (message, callback) => {
-      chrome.runtime.lastError = lastError
+  void (chrome.runtime.sendMessage as jest.Mock).mockImplementation((message: any, callback: (response: any) => void) => {
+    chrome.runtime.lastError = lastError
 
-      callback(response)
+    callback(response)
 
-      // lastError is undefined outside of a callback
-      delete chrome.runtime.lastError
-    },
-  )
+    // lastError is undefined outside of a callback
+    delete chrome.runtime.lastError
+  })
 
   // callback implementation
   const lastErrorSpy = jest.fn()
